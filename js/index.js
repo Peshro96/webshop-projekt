@@ -3,6 +3,17 @@
 /* Lagring av API:t för senare användning */
 const apiURL = "https://dummyjson.com/products";
 
+/* Kategorier för filtrering */
+const clothingCategories = [
+    "mens-shirts",
+    "mens-shoes",
+    "mens-watches",
+    "womens-dresses",
+    "womens-shoes",
+    "womens-watches",
+    "tops"
+];
+
 /* här lägger vi allt som har med datan att göra. */
 
 let products = [];
@@ -10,7 +21,6 @@ let myPosts = [];
 let currentPage = 1;
 let pageSize = 4;
 let selectedCategory = localStorage.getItem('selectedCategory') || '';
-
 
 /* debugging av produktlista -- validerad 
 async function fetchProducts() {
@@ -37,7 +47,6 @@ const pageInfo = document.getElementById('pageInfo');
 const myPostsList = document.getElementById('myPosts');
 const categoryChart = document.getElementById('categoryChart'); */
 
-
 console.log(productList);
 console.log(searchInput);
 console.log(categorySelect);
@@ -50,7 +59,6 @@ console.log(pageInfo);
 document.addEventListener("DOMContentLoaded", () => {
     fetchProducts();
 });
-
 
 /* När HTML strukturen är laddad i webbläsaren, 
 körs denna funktion inuti (produkter laddas in via fetch) */
@@ -70,16 +78,6 @@ async function fetchProducts() {
         // visuellet bevis i konsolen att hämtningen funkar
         console.log("API-data:", products);
 
-// test
-const allCategories = products.map(product => product.category);
-const categories = [...new Set(allCategories)];
-
-console.log("alla kategorier:", allCategories);
-console.log("unika kategorier:", categories);
-
-
-
-
         // renderar produkterna på sidan
         renderProducts(); 
 
@@ -90,19 +88,28 @@ console.log("unika kategorier:", categories);
     
 }
 
-// visar produkter i article
+// visar produkter i article# --> funktionen tar data och bygger html av den
 function renderProducts() {
     const searchTerm = searchInput.value.toLowerCase();
+    const selectedCat = categorySelect.value; // <-- hämta vald kategori
 
+    // vi filtrerar på både kategori och sökterm
     const filtredproducts = products.filter(product => {
-        if (!searchTerm) return true;
-        return product.title.toLowerCase().includes(searchTerm);
+
+        // Regler för vad som ska visas 
+
+        const matchCategory = !selectedCat || product.category === selectedCat;
+        // ^ om ingen kategori vald ->, annars måste a
+
+
+        const matchSearch = !searchTerm || product.title.toLowerCase().includes(searchTerm);
+        return matchCategory && matchSearch;
     });
 
     productList.innerHTML = "";
 
     filtredproducts.forEach(product => {
-        const card = document.createElement("div");
+        const card = document.createElement("article");
         card.classList.add("product-card");
 
         card.innerHTML = `
@@ -121,32 +128,7 @@ function renderProducts() {
     });
 }
 
+categorySelect.addEventListener("change", renderProducts);
+
 // varje gång användaren skriver -> rendera om
 searchInput.addEventListener("input", renderProducts);
-
-
-
-
-
-
-
-
-/* globala variabler
-saker som resten av index.js behövr komma åt t.ex :
-products, filtredproducts, API-URL osv.
-
-fetchProducts()
-hämta produkter från dummyjson
-spara dem i min product-array
-returnera datan så resten av koden kan använda den
-
-egna block för att datan ska hållas separat.
-inte blandas med rendering eller events
-renare flöde, enklare att förstå allt visuellt senare.
-
-*/
-
-
-/* rendering */
-
-/* events och init */
