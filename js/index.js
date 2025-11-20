@@ -3,7 +3,7 @@
 /* Lagring av API:t för senare användning */
 const apiURL = "https://dummyjson.com/products";
 
-/* här kägger vi allt som har med datan att göra. */
+/* här lägger vi allt som har med datan att göra. */
 
 let products = [];
 let myPosts = [];
@@ -104,6 +104,36 @@ function renderProducts() {
         productList.appendChild(card);
     });
 }
+
+
+// test av sökfunktion
+
+searchInput.addEventListener("input", () => {
+    console.log("du skrev:", searchInput.value);
+})
+
+
+// skapa en filtrerad lista 
+
+searchInput.addEventListener("input", () => {
+
+    // hämtar det användaren skrev i sökrutan
+    // .value = textvärde
+    // toLowerCase() = gör allt smått (en standard vid sök)
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // skapar en ny lista baserat på vad användaren skrivit
+    // product.filter() går igenom alla produkter och väljer ut de som matchar
+    const filtered = products.filter(product => {
+
+        // product.title = produktens titel
+        // .includes (searchTerm) = kolla om söktexten finns någonstans i titeln
+        // return true => behåll produkten i filtered-listan
+        return product.title.toLowerCase().includes(searchTerm);
+    });
+    // bara för att se vad som matchar - ingen rendering ännu
+    console.log("matchande produkter:", filtered);
+});
 
 
 
