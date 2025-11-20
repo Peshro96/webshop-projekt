@@ -59,7 +59,7 @@ körs denna funktion inuti (produkter laddas in via fetch) */
 async function fetchProducts() {
     try {
         // Gör ett anrop till API:t
-        const response = await fetch(`${apiURL}?limit=30`);
+        const response = await fetch(`${apiURL}?limit=3000`);
         
         // omvandlar svaret till JSON-data
         const data = await response.json();
@@ -69,6 +69,16 @@ async function fetchProducts() {
 
         // visuellet bevis i konsolen att hämtningen funkar
         console.log("API-data:", products);
+
+// test
+const allCategories = products.map(product => product.category);
+const categories = [...new Set(allCategories)];
+
+console.log("alla kategorier:", allCategories);
+console.log("unika kategorier:", categories);
+
+
+
 
         // renderar produkterna på sidan
         renderProducts(); 
@@ -80,60 +90,42 @@ async function fetchProducts() {
     
 }
 
-// visar produkter i article id="products"
+// visar produkter i article
 function renderProducts() {
-    
-    //tömmer det som redan finns i listan så att inga dubletter skapas
+    const searchTerm = searchInput.value.toLowerCase();
+
+    const filtredproducts = products.filter(product => {
+        if (!searchTerm) return true;
+        return product.title.toLowerCase().includes(searchTerm);
+    });
+
     productList.innerHTML = "";
 
-    // loopar igenom alla produkter i vår array
-    products.forEach(product => {
-        // skapar ett nytt elemen
+    filtredproducts.forEach(product => {
         const card = document.createElement("div");
         card.classList.add("product-card");
 
-        // fyller kortet med info (#)
-        card.innerHTML =`
+        card.innerHTML = `
+        <img 
+        src="${product.thumbnail}"
+        alt="${product.title}"
+        class="product-image">
+
         <h3>${product.title}</h3>
         <p>Kategori: ${product.category}</p>
         <p>Beskrivning: ${product.description}</p>
         <p>Pris: ${product.price} kr</p>
         `;
 
-        // lägger in kortet i vår <article id="products">
         productList.appendChild(card);
     });
 }
 
-
-// test av sökfunktion
-
-searchInput.addEventListener("input", () => {
-    console.log("du skrev:", searchInput.value);
-})
+// varje gång användaren skriver -> rendera om
+searchInput.addEventListener("input", renderProducts);
 
 
-// skapa en filtrerad lista 
 
-searchInput.addEventListener("input", () => {
-
-    // hämtar det användaren skrev i sökrutan
-    // .value = textvärde
-    // toLowerCase() = gör allt smått (en standard vid sök)
-    const searchTerm = searchInput.value.toLowerCase();
-
-    // skapar en ny lista baserat på vad användaren skrivit
-    // product.filter() går igenom alla produkter och väljer ut de som matchar
-    const filtered = products.filter(product => {
-
-        // product.title = produktens titel
-        // .includes (searchTerm) = kolla om söktexten finns någonstans i titeln
-        // return true => behåll produkten i filtered-listan
-        return product.title.toLowerCase().includes(searchTerm);
-    });
-    // bara för att se vad som matchar - ingen rendering ännu
-    console.log("matchande produkter:", filtered);
-});
 
 
 
