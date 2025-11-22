@@ -39,12 +39,6 @@ nav li {
     color: white;
     font-size: 24px;
 }
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-}
-
 /* Test Logga Storlek */
 #nav-logo img {
     max-height: 200px;
@@ -57,61 +51,43 @@ nav ul li a {
     margin-top: 10px;
 }
 
+h1 {
+    text-align: center;
+}
+
 /* Färg på searchbar bakgrunden */
 header {
     background-color: #595959;
 
     text-align: center;
 }
-/* Searchbar och filter  */
-.filter-section {
-    padding: 16px;
-    width: max-content;
-    font-size: 16px;
-    display: flex;
-    gap: 20px;
-    color: #333;
-    margin-left: 14px;
-    padding-bottom: 14px;
-}
 
-.filter-section input[type='text'] {
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-}
-.filter-section label {
+.admin-header-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
-}
-
-/* Produktkorten */
-main {
-    flex: 1;
     padding: 20px;
     justify-content: center;
     flex-wrap: wrap;
-}
-.material-symbols-outlined {
-    cursor: pointer;
-    color: #fff;
+    border: #4d4d4d solid 2px;
+    margin: 20px;
 }
 
-main .product-prod {
+.admin-poster {
     display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 20px;
-}
-
-.prdoduct-buttons {
-    display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding: 20px;
+    justify-content: top;
+    flex-wrap: wrap;
+    border: #4d4d4d solid 2px;
+    margin: 20px;
+    height: 20vh;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
 }
 
 /* Footer  */

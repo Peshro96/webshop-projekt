@@ -25,12 +25,16 @@
                         <!-- <li id="nav-logo">
                             <img src="Assets/palando.png" alt="Logo" />
                         </li> -->
-                        <li id="nav-home">Nav-home</li>
-                        <li id="nav-admin">Nav-admin</li>
+                        <li id="nav-home"><a href="#">Home</a></li>
+                        <li id="nav-admin">
+                            <a href="admin.html">Admin</a>
+                        </li>
                     </ul>
                 </nav>
 
-                <section id="logo" ><img src="Assets/logo.png" alt="Logo"></section>
+                <section id="logo">
+                    <img src="Assets/logo.png" alt="Logo" />
+                </section>
 
                 <!-- Sökfält och filtreringsknappar sorterade efter id / value -->
 
@@ -50,24 +54,27 @@
                     <!-- Filtrera kategorier -->
 
                     <select name="filter-category" id="filter-category">
-                        <option value="all-categorys">all categorys</option>
-                        <option value="mens-shirts">mens-shirts</option>
-                        <option value="mens-shoes">mens-shoes</option>
-                        <option value="mens-watches">mens-watches</option>
-                        <option value="womens-dresses">womens-dresses</option>
-                        <option value="womens-shoes">womens-shoes</option>
-                        <option value="womens-watches">womens-watches</option>
-                        <option value="tops">tops</option>
+                        <option value="all-categorys">All Categories</option>
+                        <option value="mens-shirts">Mens-Shirts</option>
+                        <option value="mens-shoes">Mens-Shoes</option>
+                        <option value="mens-watches">Mens-Watches</option>
+                        <option value="womens-dresses">Womens-Dresses</option>
+                        <option value="womens-shoes">Womens-Shoes</option>
+                        <option value="womens-watches">Womens-Watches</option>
+                        <option value="tops">Tops</option>
                     </select>
-
                 </section>
             </header>
 
             <main>
-                <article id="products"></article>
-                <button id="prevBtn">Prev</button>¨
-                <span id="pageInfo"></span>
-                <button id="nextBtn">Next</button>
+                <div class="product-prod">
+                    <article id="products"></article>
+                </div>
+                <div class="prdoduct-buttons">
+                    <button id="prevBtn">Prev</button>
+                    <span id="pageInfo"></span>
+                    <button id="nextBtn">Next</button>
+                </div>
             </main>
 
             <footer>
