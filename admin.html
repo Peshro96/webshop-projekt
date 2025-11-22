@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
-        <link rel="stylesheet" href="css/styles.css" />
+        <link rel="stylesheet" href="css/admin.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -25,7 +25,7 @@
                         <!-- <li id="nav-logo">
                             <img src="Assets/palando.png" alt="Logo" />
                         </li> -->
-                        <li id="nav-home"><a href="#">Home</a></li>
+                        <li id="nav-home"><a href="index.html">Home</a></li>
                         <li id="nav-admin">
                             <a href="admin.html">Admin</a>
                         </li>
@@ -34,47 +34,25 @@
 
                 <section id="logo">
                     <img src="Assets/logo.png" alt="Logo" />
-                </section>
+                    
 
-                <!-- Sökfält och filtreringsknappar sorterade efter id / value -->
-
-                <section class="filter-section">
-                    <label for="search">
-                        <span class="material-symbols-outlined">
-                            search
-                        </span></label
-                    >
-                    <input
-                        type="text"
-                        name="search"
-                        id="search"
-                        placeholder="search"
-                    />
-
-                    <!-- Filtrera kategorier -->
-
-                    <select name="filter-category" id="filter-category">
-                        <option value="all-categorys">All Categories</option>
-                        <option value="mens-shirts">Mens-Shirts</option>
-                        <option value="mens-shoes">Mens-Shoes</option>
-                        <option value="mens-watches">Mens-Watches</option>
-                        <option value="womens-dresses">Womens-Dresses</option>
-                        <option value="womens-shoes">Womens-Shoes</option>
-                        <option value="womens-watches">Womens-Watches</option>
-                        <option value="tops">Tops</option>
-                    </select>
-                </section>
             </header>
+            <h1>Admin</h1>
+            <section class="admin-header-section">
+<h3 class="admin-product-add">Skapa produkt</h3>
+<p>Namn: <input type="text" placeholder="Namn"></p>
+<p>Pris: <input type="number" placeholder="Pris"></p>
+<p>Kategori: <input type="text" placeholder="Kategori"></p>
+<p>Beskrivning: <input type="text" placeholder="Beskrivning"></p>
+<Button>Skapa</Button>
+            </section>
+
+            <section class="admin-poster">
+                <h3> Mina Poster </h3>
+            </section>
 
             <main>
-                <div class="product-prod">
-                    <article id="products"></article>
-                </div>
-                <div class="prdoduct-buttons">
-                    <button id="prevBtn">Prev</button>
-                    <span id="pageInfo"></span>
-                    <button id="nextBtn">Next</button>
-                </div>
+
             </main>
 
             <footer>
