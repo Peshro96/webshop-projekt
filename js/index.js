@@ -189,3 +189,72 @@ searchInput.addEventListener('input', () => {
     currentPage = 1 // reseta till första sidan
     renderProducts()
 })
+
+function renderFeaturedProducts() {
+    const featured = JSON.parse(
+        localStorage.getItem('featuredProducts') || '[]'
+    )
+    const featuredContainer = document.getElementById('featured-products')
+    if (!featuredContainer) return
+
+    featuredContainer.innerHTML = ''
+    featured.forEach((product) => {
+        const card = document.createElement('div')
+        card.classList.add('product-card')
+        card.innerHTML = `
+            <h4>${product.title}</h4>
+            <p><strong>Kategori:</strong> ${product.category}</p>
+            <p>${product.description}</p>
+            <p><strong>Pris:</strong> ${product.price} kr</p>
+            <img src="${
+                product.thumbnail || product.images?.[0] || product.image
+            }" width="150">
+        `
+        featuredContainer.appendChild(card)
+    })
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderFeaturedProducts()
+
+})
+
+function renderFeaturedProducts() {
+    const featured = JSON.parse(
+        localStorage.getItem('featuredProducts') || '[]'
+    )
+    const featuredContainer = document.getElementById('featured-products')
+    if (!featuredContainer) return
+
+    featuredContainer.innerHTML = ''
+    featured.forEach((product, i) => {
+        const card = document.createElement('div')
+        card.classList.add('product-card')
+        card.innerHTML = `
+            <h4>${product.title}</h4>
+            <p><strong>Kategori:</strong> ${product.category}</p>
+            <p>${product.description}</p>
+            <p><strong>Pris:</strong> ${product.price} kr</p>
+            <img src="${
+                product.thumbnail || product.images?.[0] || product.image
+            }" width="150">
+            <button class="remove-featured-btn" data-index="${i}">Ta bort</button>
+        `
+        featuredContainer.appendChild(card)
+    })
+}
+
+document
+    .getElementById('featured-products')
+    .addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-featured-btn')) {
+            const index = e.target.getAttribute('data-index')
+            let featured = JSON.parse(
+                localStorage.getItem('featuredProducts') || '[]'
+            )
+            featured.splice(index, 1)
+            localStorage.setItem('featuredProducts', JSON.stringify(featured))
+            renderFeaturedProducts()
+        }
+    })
