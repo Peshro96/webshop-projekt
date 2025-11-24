@@ -1,5 +1,5 @@
 const API_URL = 'https://dummyjson.com/products'
-
+let productChart = null
 const addProductForm = document.getElementById('addProductForm')
 const productsContainer = document.getElementById('products')
 
@@ -10,7 +10,19 @@ let products = JSON.parse(localStorage.getItem('products')) || []
 function renderProducts() {
     productsContainer.innerHTML = ''
 
-    products.forEach((product) => {
+    // Filtrera kategorier och begränsa antal produkter
+    const beautyProducts = products
+        .filter((p) => p.category.toLowerCase() === 'beauty')
+        .slice(0, 5)
+
+    const furnitureProducts = products
+        .filter((p) => p.category.toLowerCase() === 'furniture')
+        .slice(0, 3)
+
+    const finalProducts = [...beautyProducts, ...furnitureProducts]
+
+    // Rendera produkterna
+    finalProducts.forEach((product) => {
         const card = document.createElement('div')
         card.classList.add('product-card')
 
@@ -19,8 +31,11 @@ function renderProducts() {
             <p><strong>Kategori:</strong> ${product.category}</p>
             <p>${product.description}</p>
             <p><strong>Pris:</strong> ${product.price} kr</p>
-            <img src="${product.thumbnail || product.image}" width="150">
+            <img src="${product.thumbnail || product.images?.[0]}" width="150">
             <button class="delete-btn" data-id="${product.id}">Ta bort</button>
+            <button class="show-on-index-btn" data-id="${
+                product.id
+            }">Visa på startsidan</button>
         `
 
         productsContainer.appendChild(card)
@@ -32,19 +47,29 @@ function renderProducts() {
 function renderChart(products) {
     const ctx = document.getElementById('productChart')
 
-    const categoryCounts = {}
+    // Radera befintlig graf innan ny skapas
+    if (productChart !== null) {
+        productChart.destroy()
+    }
 
-    products.forEach((product) => {
-        const cat = product.category
-        categoryCounts[cat] = (categoryCounts[cat] || 0) + 1
-    })
+    const beautyProducts = products
+        .filter((p) => p.category.toLowerCase() === 'beauty')
+        .slice(0, 5)
+
+    const furnitureProducts = products
+        .filter((p) => p.category.toLowerCase() === 'furniture')
+        .slice(0, 3)
+
+    const categoryCounts = {
+        beauty: beautyProducts.length,
+        furniture: furnitureProducts.length
+    }
 
     const labels = Object.keys(categoryCounts)
     const values = Object.values(categoryCounts)
 
-    //Räknar ut antal produkter per kategori och skapar ett stapeldiagram med Chart.js
-
-    new Chart(ctx, {
+    // Spara chart-instansen i variabeln
+    productChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
@@ -135,9 +160,37 @@ productsContainer.addEventListener('click', async (e) => {
         localStorage.setItem('products', JSON.stringify(products))
 
         renderProducts()
+        renderChart(products)
     } catch (error) {
         console.error('DELETE error:', error)
     }
 })
 
 loadProducts()
+
+productsContainer.addEventListener('click', (e) => {
+    // ...redan befintlig kod för delete...
+
+    // Visa på startsidan
+    if (e.target.classList.contains('show-on-index-btn')) {
+        const id = e.target.getAttribute('data-id')
+        const product = products.find((p) => String(p.id) === String(id))
+        if (product) {
+            // Hämta nuvarande "featuredProducts" från localStorage eller skapa ny array
+            const featured = JSON.parse(
+                localStorage.getItem('featuredProducts') || '[]'
+            )
+            // Lägg till produkten om den inte redan finns
+            if (!featured.some((p) => String(p.id) === String(product.id))) {
+                featured.push(product)
+                localStorage.setItem(
+                    'featuredProducts',
+                    JSON.stringify(featured)
+                )
+                alert('Produkten visas nu på startsidan!')
+            } else {
+                alert('Produkten visas redan på startsidan.')
+            }
+        }
+    }
+})

@@ -93,6 +93,13 @@ main {
     justify-content: center;
     flex-wrap: wrap;
 }
+
+main .featured-products {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 20px;
+}
 .material-symbols-outlined {
     cursor: pointer;
     color: #fff;
