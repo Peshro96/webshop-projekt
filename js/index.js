@@ -1,9 +1,15 @@
-/* data & API*/
+/* 
+    index.js
+    Sköter produktlistan, hämtning från API, filtrering, sök, sidindelning
+    och visning av utvalda produkter
+*/
 
-/* Lagring av API:t för senare användning "vår leverantör" */
+/* API & kategorier */
+
+// Bas-URL till DummyJSON, används i alla fetch-anrop
 const apiURL = 'https://dummyjson.com/products'
 
-/* Kategorier för filtrering, "Vår klädesbutik" */
+// Kategorier vi visar på sidan (kläddelen av API:t)
 const clothingCategories = [
     'mens-shirts',
     'mens-shoes',
@@ -14,28 +20,18 @@ const clothingCategories = [
     'tops'
 ]
 
-/* här lägger vi allt som har med datan att göra. */
+/* Global state */
 
+// Globala variabler för produktdata, sidhantering och filtrering
 let products = []
 let myPosts = []
 let currentPage = 1
 let pageSize = 4
 let selectedCategory = localStorage.getItem('selectedCategory') || ''
 
-/* debugging av produktlista -- validerad
-async function fetchProducts() {
-    const res = await fetch(clothesAPIURL);
-    const data = await res.json();
-    console.log('produkter från api:', data.products);
-    product = data.products;
-}
+/* DOM-elements */
 
-fetchProducts();
-
- */
-
-/* DOM elements */
-
+// Hämtar referenser till relevanta DOM-element för dynamisk uppdatering.
 const productList = document.getElementById('products')
 const searchInput = document.getElementById('search')
 const categorySelect = document.getElementById('filter-category')
@@ -43,97 +39,89 @@ const sortSelect = document.getElementById('filter-price')
 const prevPageBtn = document.getElementById('prevBtn')
 const nextPageBtn = document.getElementById('nextBtn')
 const pageInfo = document.getElementById('pageInfo')
-/* const productForm = document.getElementById('productForm');
-const myPostsList = document.getElementById('myPosts');
-const categoryChart = document.getElementById('categoryChart'); */
 
-console.log(productList)
-console.log(searchInput)
-console.log(categorySelect)
-console.log(sortSelect)
-console.log(prevPageBtn)
-console.log(nextPageBtn)
-console.log(pageInfo)
+/* Initiering */
 
-// när HTML är färdigladdad --> hämta produkterna
+// När sidan är redo: hämta produkterna så vi har något att jobba med
 document.addEventListener('DOMContentLoaded', () => {
     fetchProducts()
+    renderFeaturedProducts()
 })
 
-/* När HTML strukturen är laddad i webbläsaren,
-körs denna funktion inuti (produkter laddas in via fetch) */
+/*
+    Hämtar produkter från API:t och filtrerar ut klädkategorier
+    Resultatet sparas i 'products' och visas på sidan
+*/
 
 // Hämtar produkter från API:t
 async function fetchProducts() {
     try {
-        // Gör ett anrop till API:t, (alla produkter och kategorier)
+        // Hämtar alla produkter från API:t (rejäl limit, tanken i början var för att se alla kategorier osv.)
         const response = await fetch(`${apiURL}?limit=3000`)
 
-        // Vi gör om svaret till JS-objekt
+        // Gör om svaret till ett JS-objekt
         const data = await response.json()
 
-        // vi sparar alla produkter i en temporär variabel
+        // Temporär lista med alla produkter
         const allproducts = data.products
 
-        // filtrerar ner till våra klädkategorier, som finns listade inom clothingCategories
+        // Plockar ut bara de produkter som matchar våra klädkategorier
         products = allproducts.filter((product) =>
             clothingCategories.includes(product.category)
         )
 
-        // visuellet bevis i konsolen att hämtningen och filtrering funkar
+        // Snabb koll i konsolen när man debuggar
         console.log('API-data (endast kläder):', products)
 
-        // visa produkterna på sidan
+        // Ritning av första vyn
         renderProducts()
     } catch (err) {
-        // ifall api ej fungerar, hör ihop med 'try funktionen'
+        // Om API:et skulle falla eller svara konstigt
         console.error('API-fel:', err)
     }
 }
 
-// visar produkter i article# --> funktionen tar data och bygger html av den
+// Renderar ut produkterna på sidan (tar hänsyn till sök, kategori och sidindelning)
 function renderProducts() {
+    // Läser av sökfältet + vald kategori just nu
     const searchTerm = searchInput.value.toLowerCase()
-    const selectedCat = categorySelect.value // <-- hämta vald kategori
+    const selectedCat = categorySelect.value
 
-    // vi filtrerar på både kategori och sökterm
+    // Filtrerar listan: först kategori-IF-logik, sen sök-IF-logik
     const filtredproducts = products.filter((product) => {
-        // Regler för vad som ska visas
-
+        // IF-logik för kategori-regeln
         const matchCategory =
-            selectedCat === 'all-categorys' || // om “all categorys” är valt -> visa ALLA (men bara kläder, pga fetch-filter)
-            !selectedCat || // om ingen kategori är vald alls (tom sträng) -> visa alla
-            product.category === selectedCat // annars: visa bara de med exakt rätt kategori
-        // ^IF-sats- likt villkordstyrd formatering, om ingen kategori vald ->, annars måste ****************
+            selectedCat === 'all-categorys' ||  // if: "alla kategorier" --> visa allt
+            !selectedCat ||  // if: ingen kategori vald --> visa allt
+            product.category === selectedCat // if: exakt match --> visa just den kategorin
 
+        // IF-logik för sök-regeln (titel mot söksträng)
         const matchSearch =
             !searchTerm || product.title.toLowerCase().includes(searchTerm)
+
+        // Båda reglerna måste passera för att produkten ska komma med
         return matchCategory && matchSearch
     })
 
-    // Pagination
-
-    // Vi räknar ut hur många sidor vi har totalt
-    // math.ceil(...) rundar upp så att t.ex 10 produkter med pageSize 4 ger 3 sidor (4+4+2)
-
+    // Räknar ut hur många sidor det blir utifrån filtrerat resultat
     const totalPages = Math.max(1, Math.ceil(filtredproducts.length / pageSize))
 
-    // om currentPage blivit större än totala antalet sidor (t.ex efter filter)
-    // så tvingar vi tillbaka den till sista sidan
+    // Om man t.ex. filtrerar ner så att currentPage inte finns längre --> hoppa till sista
     if (currentPage > totalPages) {
         currentPage = totalPages
     }
 
-    // vi räknar ut vilka index som ska visas på denna sida
+    // Plockar fram vilka index som ska visas på just den här sidan
+    const startIndex = (currentPage - 1) * pageSize // ex: sida 1 --> 0, sida 2 --> 4 osv.
+    const endIndex = startIndex + pageSize  // ex: sida 1 --> 0–3, sida 2 --> 4–7
 
-    const startIndex = (currentPage - 1) * pageSize // ex: sida 1 -> 0, sida 2 -> 4, sida 3 -> 8
-    const endIndex = startIndex + pageSize // ex: sida 1 -> 0–3, sida 2 -> 4–7
-
-    // plocka ut bara de produkter som hör till denna sida
+    // Skär ut bara de produkter som hör till aktuell sida
     const pageItems = filtredproducts.slice(startIndex, endIndex)
 
+    // Töm listan innan vi ritar om
     productList.innerHTML = ''
 
+    // Bygger upp ett produktkort per item
     pageItems.forEach((product) => {
         const card = document.createElement('article')
         card.classList.add('product-card')
@@ -153,73 +141,44 @@ function renderProducts() {
         productList.appendChild(card)
     })
 
-    // text så användaren ser vilken sida hen är på
+    // Enkel info om vilken sida användaren är på
     pageInfo.textContent = `Sida ${currentPage} av ${totalPages}`
 
-    // styr om knapparna så dessa blir klickbara
+    // Styr knapparnas state (disable när det inte går att gå vidare)
     prevPageBtn.disabled = currentPage === 1
     nextPageBtn.disabled =
         currentPage === totalPages || filtredproducts.length === 0
 }
 
-// När användaren klickar på "Förgående"
+// När användaren klickar på "Föregående"
 prevPageBtn.addEventListener('click', () => {
-    // gå bakåt om vi inte är på sida 1
+    // Gå bakåt om vi inte redan står på första
     if (currentPage > 1) {
-        currentPage-- // gå en sida bakåt (korta formen --)
-        renderProducts() // rita om med nya currentPage
+        currentPage--  // kortform: minus en sida
+        renderProducts()  // rita om med uppdaterad currentPage
     }
 })
 
 // När användaren klickar på "Nästa"
 nextPageBtn.addEventListener('click', () => {
-    // Vi låter renderProducts sköta gränsen vid sista sidan **********************
-    currentPage++ // gå en sida framåt
-    renderProducts() // gör om med nya currentPage
+    // Här låter vi renderProducts hålla koll på om vi slagit i taket
+    currentPage++  // hoppa fram en sida
+    renderProducts()  // rita om listan
 })
 
-// när användaren ändrar kategori  -> börja om på sida 1
+// När kategori ändras --> börja om från sida 1 och rendera om
 categorySelect.addEventListener('change', () => {
-    currentPage = 1 // reseta till första sidan
+    currentPage = 1
     renderProducts()
 })
 
-// varje gång användaren skriver i sökfältet → börja om på sida 1
+// När användaren skriver i sökfältet --> också tillbaka till sida 1
 searchInput.addEventListener('input', () => {
-    currentPage = 1 // reseta till första sidan
+    currentPage = 1
     renderProducts()
 })
 
-function renderFeaturedProducts() {
-    const featured = JSON.parse(
-        localStorage.getItem('featuredProducts') || '[]'
-    )
-    const featuredContainer = document.getElementById('featured-products')
-    if (!featuredContainer) return
-
-    featuredContainer.innerHTML = ''
-    featured.forEach((product) => {
-        const card = document.createElement('div')
-        card.classList.add('product-card')
-        card.innerHTML = `
-            <h4>${product.title}</h4>
-            <p><strong>Kategori:</strong> ${product.category}</p>
-            <p>${product.description}</p>
-            <p><strong>Pris:</strong> ${product.price} kr</p>
-            <img src="${
-                product.thumbnail || product.images?.[0] || product.image
-            }" width="150">
-        `
-        featuredContainer.appendChild(card)
-    })
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    renderFeaturedProducts()
-
-})
-
+// Renderar featured-listan med "ta bort"-knapp per produkt
 function renderFeaturedProducts() {
     const featured = JSON.parse(
         localStorage.getItem('featuredProducts') || '[]'
@@ -245,6 +204,7 @@ function renderFeaturedProducts() {
     })
 }
 
+// Lyssnar på klick i featured-listan och tar bort vald produkt från localStorage
 document
     .getElementById('featured-products')
     .addEventListener('click', function (e) {
