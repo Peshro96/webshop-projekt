@@ -34,23 +34,36 @@
 
                 <section id="logo">
                     <img src="Assets/logo.png" alt="Logo" />
-                    
+
 
             </header>
             <h1>Admin</h1>
             <section class="admin-header-section">
-<h3 class="admin-product-add">Skapa produkt</h3>
+<!-- <h3 class="admin-product-add">Skapa produkt</h3>
 <p>Namn: <input type="text" placeholder="Namn"></p>
 <p>Pris: <input type="number" placeholder="Pris"></p>
 <p>Kategori: <input type="text" placeholder="Kategori"></p>
 <p>Beskrivning: <input type="text" placeholder="Beskrivning"></p>
-<Button>Skapa</Button>
+<Button>Skapa</Button> -->
+<form id="addProductForm">
+    <input type="text" id="addTitle" placeholder="Title" required>
+    <input type="text" id="addCategory" placeholder="Category" required>
+    <input type="text" id="addDescription" placeholder="Description" required>
+    <input type="number" id="addPrice" placeholder="Price" required>
+    <input type="url" id="addImage" placeholder="Image URL" required>
+    <button type="submit">Add Product</button>
+</form>
+
             </section>
 
             <section class="admin-poster">
                 <h3> Mina Poster </h3>
+                <div id="products"></div>
             </section>
-
+<section class="chart">
+            <h3>Produktstatistik</h3>
+<canvas id="productChart"></canvas>
+</section>
             <main>
 
             </main>
@@ -76,6 +89,7 @@
                 </section>
             </footer>
         </section>
-        <script src="js/index.js"></script>
+        <script src="js/admin.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </body>
 </html>
