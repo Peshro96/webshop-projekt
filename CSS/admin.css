@@ -14,6 +14,7 @@ body {
 .content {
     flex: 1;
 }
+
 .main-section {
     flex: 1;
     display: flex;
@@ -63,7 +64,7 @@ header {
 
     text-align: center;
 }
-
+/* stil för admin header sektionen */
 .admin-header-section {
     display: flex;
     flex-direction: column;
@@ -74,7 +75,7 @@ header {
     border: #4d4d4d solid 2px;
     margin: 20px;
 }
-
+/* Stil för produkterna i mina poster */
 .admin-poster {
     display: flex;
     flex-direction: column;
@@ -88,7 +89,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
 }
-
+/* Stil för charten */
 .chart {
     width: 100%;
     display: flex;
@@ -111,6 +112,7 @@ footer {
     justify-content: space-around;
     margin-top: auto;
 }
+/* Still för "kontakta oss" delen i footern */
 Footer .footer-kontakt {
     display: flex;
     flex-direction: column;
@@ -119,6 +121,7 @@ Footer .footer-kontakt {
     padding: 1rem;
     background-color: #4d4d4d;
 }
+/* Stil för "om oss" delen i fotern */
 Footer .footer-om-oss {
     display: flex;
     flex-direction: column;
@@ -127,6 +130,7 @@ Footer .footer-om-oss {
     padding: 1rem;
     background-color: #4d4d4d;
 }
+/* Stil för "produkter" delen i footern */
 footer .footer-produkter {
     display: flex;
     flex-direction: column;
@@ -140,10 +144,11 @@ footer .footer-produkter {
 footer h3 {
     color: #fff;
 }
+
 footer p {
     color: #ccc;
 }
-
+/* En till stil för produkterna i poster?? idk */
 .admin-poster {
     display: flex;
     flex-direction: column;
@@ -152,6 +157,7 @@ footer p {
     margin-bottom: 2rem;
 }
 
+/* stil för produkterna */
 #products {
     display: flex;
     flex-wrap: wrap;
@@ -159,7 +165,7 @@ footer p {
     width: 100%;
     box-sizing: border-box;
 }
-
+/* Stil för produkt korten */
 .product-card {
     flex: 1 1 250px;
     min-width: 220px;

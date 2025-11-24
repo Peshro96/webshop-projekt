@@ -25,7 +25,7 @@ function renderProducts() {
     finalProducts.forEach((product) => {
         const card = document.createElement('div')
         card.classList.add('product-card')
-
+// Fyller kortet med produktinfo
         card.innerHTML = `
             <h4>${product.title}</h4>
             <p><strong>Kategori:</strong> ${product.category}</p>
@@ -51,7 +51,7 @@ function renderChart(products) {
     if (productChart !== null) {
         productChart.destroy()
     }
-
+// Lägger till 5 skönhetsprodukter och 3 möbelprodukter för diagrammet
     const beautyProducts = products
         .filter((p) => p.category.toLowerCase() === 'beauty')
         .slice(0, 5)
@@ -59,12 +59,12 @@ function renderChart(products) {
     const furnitureProducts = products
         .filter((p) => p.category.toLowerCase() === 'furniture')
         .slice(0, 3)
-
+ // Räknar antalet produkter per kategori
     const categoryCounts = {
         beauty: beautyProducts.length,
         furniture: furnitureProducts.length
     }
-
+// Förbereder data för diagrammet
     const labels = Object.keys(categoryCounts)
     const values = Object.values(categoryCounts)
 
@@ -100,7 +100,7 @@ async function loadProducts() {
         const data = await response.json()
 
         products = data.products
-
+// Sparar produkterna i localStorage för offline-användning
         localStorage.setItem('products', JSON.stringify(products))
         renderProducts()
         renderChart(products)
@@ -108,7 +108,7 @@ async function loadProducts() {
         console.log(
             'Kunde inte hämta från API, laddar från localStorage istället'
         )
-
+// Laddar produkter från localStorage
         renderProducts()
         renderChart(products)
     }
@@ -118,7 +118,7 @@ async function loadProducts() {
 
 addProductForm.addEventListener('submit', async (e) => {
     e.preventDefault()
-
+// Skapar ny produkt från formulärdata
     const newProduct = {
         title: document.getElementById('addTitle').value,
         category: document.getElementById('addCategory').value,
@@ -126,19 +126,19 @@ addProductForm.addEventListener('submit', async (e) => {
         price: parseFloat(document.getElementById('addPrice').value),
         image: document.getElementById('addImage').value
     }
-
+// Skickar POST-förfrågan till API:et
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newProduct)
         })
-
+// Väntar på svaret och lägger till den nya produkten i listan
         const savedProduct = await response.json()
 
         products.push(savedProduct)
         localStorage.setItem('products', JSON.stringify(products))
-
+// Uppdaterar visningen
         renderProducts()
         addProductForm.reset()
     } catch (error) {
@@ -152,13 +152,13 @@ productsContainer.addEventListener('click', async (e) => {
     if (!e.target.classList.contains('delete-btn')) return
 
     const id = e.target.getAttribute('data-id')
-
+// Skickar DELETE-förfrågan till API:et
     try {
         await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
 
         products = products.filter((p) => p.id != id)
         localStorage.setItem('products', JSON.stringify(products))
-
+// Uppdaterar visningen
         renderProducts()
         renderChart(products)
     } catch (error) {

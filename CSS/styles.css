@@ -74,6 +74,7 @@ header {
     margin-left: 14px;
     padding-bottom: 14px;
 }
+/* Stil för  */
 
 .filter-section input[type='text'] {
     border-radius: 4px;
@@ -93,25 +94,26 @@ main {
     justify-content: center;
     flex-wrap: wrap;
 }
-
+/* stil för produkter som läggs till från admin */
 main .featured-products {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     gap: 20px;
 }
+/* Stil för inzoomning glaset eller vad det heter */
 .material-symbols-outlined {
     cursor: pointer;
     color: #fff;
 }
-
+/* Stil för produkt korten */
 main .product-prod {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     gap: 20px;
 }
-
+/* Still för knapparna som visar sida */
 .prdoduct-buttons {
     display: flex;
     justify-content: center;
